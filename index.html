@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storyline CRM — 기관 통합 관리</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+</head>
+<body>
+<div id="app">
+
+<!-- ══ SIDEBAR ══ -->
+<nav class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo"><div class="sb-logo-ico">📚</div>Storyline CRM</div>
+    <div class="sb-sub">기관 통합 관리 시스템 v4</div>
+  </div>
+  <div class="sb-sec">Overview</div>
+  <div class="sb-nav">
+    <button class="ni active" onclick="nav('dashboard',this)">
+      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      대시보드
+    </button>
+  </div>
+  <div class="sb-sec">Management</div>
+  <div class="sb-nav">
+    <button class="ni" onclick="nav('inst',this)">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L1 5v1h14V5L8 1zM2 7v5h2V7H2zm4 0v5h2V7H6zm4 0v5h2V7h-2zm4 0v5h2V7h-2zM1 13h14v1.5H1V13z"/></svg>
+      기관 관리
+    </button>
+    <button class="ni" id="nav-voc" onclick="nav('voc',this)">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 2h14v9H9l-3 3v-3H1V2zm4 3h6v1H5V5zm0 2h4v1H5V7z"/></svg>
+      VOC 관리
+      <span class="ni-badge" id="voc-pending-badge" style="display:none">0</span>
+    </button>
+    <button class="ni" onclick="nav('hubs',this)">
+      <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-5 6-5s6 1.7 6 5H2z"/></svg>
+      거점원 관리
+    </button>
+  </div>
+  <div class="sb-sec">Reference</div>
+  <div class="sb-nav">
+    <button class="ni" onclick="nav('strategy',this)">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12v1H2V2zm0 3h9v1H2V5zm0 3h11v1H2V8zm0 3h7v1H2v-1z"/></svg>
+      관리 기관별 구분 및 전략
+    </button>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-av">관</div>
+    <div><div style="font-size:12px;color:var(--tx2);font-weight:500">관리자</div><div style="font-size:10px">Storyline Team</div></div>
+  </div>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+<!-- ════ PAGE: DASHBOARD ════ -->
+<div class="page active" id="page-dashboard">
+  <div class="topbar">
+    <span class="tb-title">대시보드</span>
+    <div class="sp"></div>
+    <span id="dash-date" style="font-size:11px;color:var(--tx3)"></span>
+  </div>
+  <div class="content">
+    <div class="sg" id="dash-stats"></div>
+
+    <div class="g2" style="margin-bottom:14px">
+      <!-- 기관 등급 현황 -->
+      <div class="panel">
+        <div class="ph">
+          <span class="pt">기관 등급 현황</span>
+          <div class="sp"></div>
+          <button class="btn btn-info btn-sm" onclick="openSov('sov-grade-info')">📋 관리 기준</button>
+        </div>
+        <div class="pb">
+          <div style="display:flex;gap:9px;margin-bottom:13px">
+            <div class="grade-card" id="dc-A" style="flex:1;background:var(--gb);border:1px solid rgba(52,201,122,.25);border-radius:var(--rl);padding:13px;text-align:center;cursor:pointer" onclick="goInstFilter('grade','A')">
+              <div style="font-size:26px;font-weight:900;color:var(--g)">0</div>
+              <div style="font-size:10px;color:var(--g);margin-top:4px;font-weight:700">A 고활용</div>
+            </div>
+            <div class="grade-card" id="dc-B" style="flex:1;background:var(--blb);border:1px solid rgba(96,165,250,.25);border-radius:var(--rl);padding:13px;text-align:center;cursor:pointer" onclick="goInstFilter('grade','B')">
+              <div style="font-size:26px;font-weight:900;color:var(--bl)">0</div>
+              <div style="font-size:10px;color:var(--bl);margin-top:4px;font-weight:700">B 안정운영</div>
+            </div>
+            <div class="grade-card" id="dc-C" style="flex:1;background:var(--amb);border:1px solid rgba(245,158,11,.25);border-radius:var(--rl);padding:13px;text-align:center;cursor:pointer" onclick="goInstFilter('grade','C')">
+              <div style="font-size:26px;font-weight:900;color:var(--am)">0</div>
+              <div style="font-size:10px;color:var(--am);margin-top:4px;font-weight:700">C 활용지원</div>
+            </div>
+            <div class="grade-card" id="dc-D" style="flex:1;background:var(--rdb);border:1px solid rgba(240,82,82,.25);border-radius:var(--rl);padding:13px;text-align:center;cursor:pointer" onclick="goInstFilter('grade','D')">
+              <div style="font-size:26px;font-weight:900;color:var(--rd)">0</div>
+              <div style="font-size:10px;color:var(--rd);margin-top:4px;font-weight:700">D 집중대응</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--tx3);background:var(--sf2);border-radius:var(--r);padding:10px 12px;line-height:1.9">
+            <strong style="color:var(--g)">A</strong> 고활용: 활용도 75%↑, 컴플레인 0~1건, 체크 20~25점 &nbsp;
+            <strong style="color:var(--bl)">B</strong> 안정운영: 50~74%, 2~3건, 15~19점<br>
+            <strong style="color:var(--am)">C</strong> 활용지원: 25~49%, 4~5건, 10~14점 &nbsp;
+            <strong style="color:var(--rd)">D</strong> 집중대응: 24%↓, 6건↑, 9점↓ 또는 클레임이슈
+          </div>
+        </div>
+      </div>
+      <!-- VOC 유형 -->
+      <div class="panel">
+        <div class="ph"><span class="pt">VOC 유형별 분포</span></div>
+        <div class="pb" id="dash-voc-dist"></div>
+      </div>
+    </div>
+
+    <!-- 월별 VOC -->
+    <div class="panel">
+      <div class="ph"><span class="pt">월별 VOC 누적 추이</span><div class="sp"></div><span style="font-size:11px;color:var(--tx3)">막대 클릭 → VOC 탭 이동</span></div>
+      <div class="pb" id="dash-monthly"></div>
+    </div>
+
+    <!-- 거점원 후보 -->
+    <div class="panel">
+      <div class="ph"><span class="pt">⭐ 거점원 후보 자동 추천</span><div class="sp"></div><span class="badge bp">AI 분석</span></div>
+      <div class="tw"><table>
+        <thead><tr><th>기관명</th><th>지역</th><th>활용도</th><th>VOC</th><th>교육</th><th>추천등급</th></tr></thead>
+        <tbody id="dash-cands"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PAGE: INSTITUTIONS ════ -->
+<div class="page" id="page-inst">
+  <div class="topbar">
+    <span class="tb-title">기관 관리</span>
+    <div class="sp"></div>
+    <button class="btn btn-g btn-sm" onclick="exportCSV()">📥 CSV 내보내기</button>
+    <button class="btn btn-p btn-sm" onclick="openAddInst()">+ 기관 추가</button>
+  </div>
+  <div class="content">
+    <div class="panel">
+      <div class="fb">
+        <input class="fi" id="fi-q" placeholder="🔍  기관명, 원장명 검색..." oninput="renderInst()">
+        <select class="fs" id="fi-region" onchange="renderInst()"><option value="">전체 지역</option><option>서울</option><option>경기</option><option>인천</option><option>부산</option><option>대구</option><option>광주</option><option>기타</option></select>
+        <select class="fs" id="fi-branch" onchange="renderInst()"><option value="">전체 지사</option><option>서울지사</option><option>경기지사</option><option>인천지사</option><option>부산지사</option></select>
+        <select class="fs" id="fi-res" onchange="renderInst()"><option value="">담당연구원 전체</option></select>
+        <select class="fs" id="fi-yr" onchange="renderInst()"><option value="">연차 전체</option><option value="1">1년차</option><option value="2">2년차</option><option value="3">3년차</option><option value="4">4년차+</option></select>
+        <select class="fs" id="fi-grade" onchange="renderInst()"><option value="">등급 전체</option><option value="A">A 고활용</option><option value="B">B 안정운영</option><option value="C">C 활용지원</option><option value="D">D 집중대응</option><option value="">미분류</option></select>
+        <div class="edu-filter-row">
+          <select class="fs" id="fi-edu-period" onchange="renderInst()" title="교육 기간">
+            <option value="all">교육기간 전체</option>
+            <option value="1">최근 1개월</option>
+            <option value="3">최근 3개월</option>
+            <option value="6">최근 6개월</option>
+          </select>
+          <select class="fs" id="fi-edu-status" onchange="renderInst()" title="수강 여부">
+            <option value="">수강여부 전체</option>
+            <option value="done">수강</option>
+            <option value="none">미수강</option>
+          </select>
+        </div>
+        <select class="fs" id="fi-voc-month" onchange="renderInst()"><option value="">VOC 월별 전체</option></select>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>기관명</th><th>등급</th><th>지역</th><th>지사</th><th>담당연구원</th><th>원장</th><th>거점</th><th>연차</th><th>활용도</th><th>VOC</th><th>교육</th><th>최근방문</th><th></th></tr></thead>
+        <tbody id="inst-tbody"></tbody>
+      </table></div>
+      <div class="pgr"><span class="pgr-i" id="inst-pi"></span><div class="pgr-b" id="inst-pb"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PAGE: VOC ════ -->
+<div class="page" id="page-voc">
+  <div class="topbar">
+    <span class="tb-title">VOC 관리</span>
+    <div class="sp"></div>
+    <button class="btn btn-g btn-sm" id="btn-imp-filter" onclick="toggleImpFilter()">기능 개선만 보기</button>
+    <button class="btn btn-p btn-sm" onclick="openAddVoc(null)">+ VOC 등록</button>
+  </div>
+  <div class="content">
+    <div class="sg" id="voc-stats"></div>
+
+    <!-- 월별 드릴다운 패널 -->
+    <div class="panel" style="margin-bottom:14px">
+      <div class="ph">
+        <span class="pt">월별 VOC 현황 (드릴다운)</span>
+        <div class="sp"></div>
+        <div class="bc" id="voc-bc" style="margin-bottom:0"></div>
+      </div>
+      <div class="pb">
+        <div id="voc-drill-chart" style="margin-bottom:14px"></div>
+        <div id="voc-drill-table"></div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-bottom:14px">
+      <!-- VOC 유형 분포 + 필터 -->
+      <div class="panel">
+        <div class="ph">
+          <span class="pt">VOC 유형별 분포</span>
+          <div class="sp"></div>
+          <select class="fs" id="voc-type-period" onchange="renderVocTypeDist()" style="font-size:11px;padding:4px 9px">
+            <option value="all">전체 누적</option>
+            <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option><option value="4">4월</option><option value="5">5월</option><option value="6">6월</option><option value="7">7월</option><option value="8">8월</option><option value="9">9월</option><option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
+          </select>
+        </div>
+        <div class="pb" id="voc-type-chart"></div>
+      </div>
+      <!-- 키워드 -->
+      <div class="panel">
+        <div class="ph"><span class="pt">🔑 키워드 분석</span><div class="sp"></div><span class="badge bp">자동 추출</span></div>
+        <div class="pb" id="voc-kw"></div>
+      </div>
+    </div>
+
+    <!-- TOP 10 + 필터 -->
+    <div class="panel" style="margin-bottom:14px">
+      <div class="ph">
+        <span class="pt">기관별 VOC 누적 TOP 10</span>
+        <div class="sp"></div>
+        <select class="fs" id="voc-top-period" onchange="renderVocTop()" style="font-size:11px;padding:4px 9px">
+          <option value="all">전체 누적</option>
+          <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option><option value="4">4월</option><option value="5">5월</option><option value="6">6월</option><option value="7">7월</option><option value="8">8월</option><option value="9">9월</option><option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
+        </select>
+      </div>
+      <div class="pb" id="voc-top"></div>
+    </div>
+
+    <!-- VOC 목록 -->
+    <div class="panel">
+      <div class="ph"><span class="pt">VOC 목록</span><div class="sp"></div><span id="voc-filter-inst-label" style="font-size:12px;color:var(--ac)"></span><button id="voc-clear-filter" onclick="clearVocInstFilter()" style="font-size:11px;color:var(--tx3);text-decoration:underline;display:none;margin-left:6px">필터 해제</button></div>
+      <div class="fb">
+        <input class="fi" id="voc-q" placeholder="🔍  기관명, 내용 검색..." oninput="renderVocList()">
+        <select class="fs" id="voc-f-type" onchange="renderVocList()"><option value="">전체 유형</option><option>기능 개선</option><option>오류</option><option>활용성</option><option>기타</option></select>
+        <select class="fs" id="voc-f-status" onchange="renderVocList()"><option value="">전체 상태</option><option>미처리</option><option>검토중</option><option>처리완료</option></select>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>등록일</th><th>기관명</th><th>유형</th><th>내용</th><th>본사 대응</th><th>상태</th><th></th></tr></thead>
+        <tbody id="voc-tbody"></tbody>
+      </table></div>
+      <div class="pgr"><span class="pgr-i" id="voc-pi"></span><div class="pgr-b" id="voc-pb"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PAGE: HUBS ════ -->
+<div class="page" id="page-hubs">
+  <div class="topbar"><span class="tb-title">거점원 관리</span></div>
+  <div class="content">
+    <div class="sg" id="hub-stats"></div>
+    <div class="g2" style="margin-bottom:14px">
+      <!-- 체크리스트 -->
+      <div class="panel">
+        <div class="ph"><span class="pt">방문 체크리스트 기반 등급 자동 평가</span></div>
+        <div class="pb">
+          <div class="fg">
+            <label class="fl">기관명 선택</label>
+            <select class="fse" id="hub-inst-sel" onchange="renderHubPreview(this.value)">
+              <option value="">-- 기관을 선택하세요 --</option>
+            </select>
+          </div>
+          <!-- Hub preview card inserted here -->
+          <div class="hub-preview" id="hub-preview-card"></div>
+          <div style="font-size:11px;color:var(--tx3);margin-bottom:12px;background:var(--sf2);border-radius:6px;padding:8px 11px;line-height:1.8">
+            각 항목 <strong>1~5점</strong> 슬라이더 평가 · 총점 기준: <strong style="color:var(--g)">A(20~25점)</strong> <strong style="color:var(--bl)">B(15~19점)</strong> <strong style="color:var(--am)">C(10~14점)</strong> <strong style="color:var(--rd)">D(9점 이하)</strong>
+          </div>
+          <div id="hub-checklist-area"></div>
+          <div class="score-box">
+            <div id="hub-score-num" class="score-num">15</div>
+            <div id="hub-score-grade" class="score-grade" style="color:var(--bl)">B 안정 운영 기관</div>
+            <div id="hub-score-desc" class="score-desc">격월 1~2회 방문 · 관계 형성 및 이해도 향상</div>
+          </div>
+          <button class="btn btn-p" style="width:100%;margin-top:12px;justify-content:center;font-size:13px" onclick="applyHubChecklist()">✅ 확인 — 거점원 목록에 반영</button>
+        </div>
+      </div>
+      <!-- 등급 분포 -->
+      <div class="panel">
+        <div class="ph"><span class="pt">등급별 분포</span></div>
+        <div class="pb" id="hub-grade-dist"></div>
+      </div>
+    </div>
+
+    <!-- 거점원 목록 -->
+    <div class="panel">
+      <div class="ph"><span class="pt">거점원 기관 목록</span></div>
+      <div class="tw"><table>
+        <thead><tr><th>기관명</th><th>지역</th><th>관할 지사</th><th>원장명</th><th>등급</th><th>VOC</th><th>교육</th><th>활용도</th><th>후보</th></tr></thead>
+        <tbody id="hub-tbody"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PAGE: STRATEGY ════ -->
+<div class="page" id="page-strategy">
+  <div class="topbar"><span class="tb-title">관리 기관별 구분 및 관리 전략</span></div>
+  <div class="content">
+    <div class="panel" style="margin-bottom:14px">
+      <div class="ph"><span class="pt">기관 운영 유형별 세부 대응 기준</span><div class="sp"></div><span style="font-size:11px;color:var(--tx3)">분기별 유형 재분류 · 교육계 분기 기준 검토</span></div>
+      <div class="pb-sm" style="overflow-x:auto">
+        <table class="st-tbl">
+          <thead>
+            <tr>
+              <th rowspan="2" style="min-width:90px">관리 유형</th>
+              <th colspan="3">유형 분리 기준</th>
+              <th colspan="2">접점 운영 기준</th>
+              <th colspan="2">세부 대응 기준</th>
+            </tr>
+            <tr>
+              <th>데이터 활용도</th><th>컴플레인 수<br>(최근 3개월)</th><th>현장 체크 점수</th>
+              <th>방문/비대면</th><th>대응 목적</th>
+              <th>주요 점검 포인트</th><th>후속 액션</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align:center;vertical-align:middle"><span class="stA" style="font-size:16px">A</span><br><span style="font-size:11px;color:var(--g)">고활용 기관</span></td>
+              <td>75% 이상</td><td>0~1건</td><td>20~25점</td>
+              <td>분기별 1~2회</td>
+              <td>관계 유지<br>리텐션<br>거점원 발굴<br>리퍼럴</td>
+              <td>우수 활용 사례<br>교사·부모 반응<br>거점원 가능성 체크<br>개선 요구사항 파악</td>
+              <td>사례 기록<br>거점원 후보 반영<br>리퍼럴 기관 태깅 시도<br>내부 공유</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;vertical-align:middle"><span class="stB" style="font-size:16px">B</span><br><span style="font-size:11px;color:var(--bl)">안정 운영 기관</span></td>
+              <td>50~74%</td><td>2~3건</td><td>15~19점</td>
+              <td>격월 1~2회</td>
+              <td>관계 형성<br>이해도 향상<br>컨설팅<br><span style="color:var(--bl);font-size:11px">사용 정착 및 안정화</span></td>
+              <td>잘 안 쓰는 이유<br>이해도 부족 지점<br>적용 어려움<br>개선 요구사항 파악</td>
+              <td>기관 맞춤 컨설팅<br>활용 포인트 1~2개 제안<br>상위군 전환 후보 체크<br>내부 공유</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;vertical-align:middle"><span class="stC" style="font-size:16px">C</span><br><span style="font-size:11px;color:var(--am)">활용 지원 기관</span></td>
+              <td>25~49%</td><td>4~5건</td><td>10~14점</td>
+              <td>월 1회 이상<br>방문 우선 검토<br>+ 재교육 병행</td>
+              <td>신뢰 형성<br>컨설팅<br><span style="color:var(--am);font-size:11px">중간 이탈 방지</span></td>
+              <td>미사용 이유<br>어려운 기능 파악<br>어려운 활용점 파악</td>
+              <td>기관 맞춤 컨설팅<br>쉬운 가이드 제공<br>재교육 일정 제안<br>최소 사용 항목 설정<br>내부 공유</td>
+            </tr>
+            <tr style="background:rgba(240,82,82,.04)">
+              <td style="text-align:center;vertical-align:middle"><span class="stD" style="font-size:16px">D</span><br><span style="font-size:11px;color:var(--rd)">집중 대응 기관</span></td>
+              <td>24% 이하</td><td>6건 이상<br>또는 클레임이슈</td><td>9점 이하<br>또는 현장반응 악화</td>
+              <td>월 1~2회 이상 방문<br>신속 1차 응대<br>+ 필요시 현장 방문</td>
+              <td>이탈 방지<br>신뢰 형성<br>인식 개선<br>불만 완화</td>
+              <td>불편 및 불만 사항<br>필요 교육 및 개입 포인트<br>파악 → 개입 → 후속관리</td>
+              <td>이슈 유형 기록<br>2차 이내 후속조치<br>집중 모니터링<br>내부 공유</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><span class="pt">방문 체크리스트 기준표</span><div class="sp"></div><span style="font-size:11px;color:var(--tx3)">각 항목 1~5점 평가 → 총점으로 등급 자동 산정</span></div>
+      <div class="pb-sm" style="overflow-x:auto">
+        <table class="st-tbl">
+          <thead><tr><th>항목</th><th>확인 내용</th><th>점수 기준</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:600">1. 담당자 태도 및 협조도</td><td>질문 및 응답 태도 / 미팅 참여도 / 후속 협조 의사</td><td>1 비협조 → 5 협조</td></tr>
+            <tr><td style="font-weight:600">2. 시스템 이해도</td><td>핵심 기능과 데이터 의미를 이해하는 수준</td><td>1 낮음 → 5 높음</td></tr>
+            <tr><td style="font-weight:600">3. 실제 활용 의지</td><td>교육 후 활용 의향, 다음 액션 활용 의지</td><td>1 낮음 → 5 높음</td></tr>
+            <tr><td style="font-weight:600">4. 현장 반응 온도</td><td>교직원 반응, 불신/불편/방어적 반응 여부</td><td>1 부정적 → 5 우호적</td></tr>
+            <tr><td style="font-weight:600">5. 후속 관리 필요도</td><td>추가 방문, 재교육, 불만 대응 필요 수준</td><td>1 매우 높음 → 5 낮음</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;font-size:12px;color:var(--tx3);padding:0 2px">
+          ※ 총점 기준: <strong style="color:var(--g)">A 20~25점</strong> · <strong style="color:var(--bl)">B 15~19점</strong> · <strong style="color:var(--am)">C 10~14점</strong> · <strong style="color:var(--rd)">D 9점 이하</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- 등급별 카드 -->
+    <div class="g2" style="margin-bottom:14px">
+      <div class="panel" style="border-color:rgba(52,201,122,.3)">
+        <div class="ph" style="background:var(--gb)"><span class="pt stA">A 고활용 기관 대응 전략</span></div>
+        <div class="pb-sm">
+          <div style="font-size:12px;color:var(--tx2);line-height:1.9">
+            <strong>목표:</strong> 관계 유지, 리텐션, 거점원 발굴, 리퍼럴<br>
+            <strong>접점:</strong> 분기별 1~2회<br>
+            <strong>점검:</strong> 우수 활용 사례 · 교사·부모 반응 · 거점원 가능성<br>
+            <strong>후속:</strong> 사례 기록 → 거점원 후보 반영 → 리퍼럴 기관 태깅
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="border-color:rgba(96,165,250,.3)">
+        <div class="ph" style="background:var(--blb)"><span class="pt stB">B 안정 운영 기관 대응 전략</span></div>
+        <div class="pb-sm">
+          <div style="font-size:12px;color:var(--tx2);line-height:1.9">
+            <strong>목표:</strong> 관계 형성, 이해도 향상, 사용 정착 및 안정화<br>
+            <strong>접점:</strong> 격월 1~2회<br>
+            <strong>점검:</strong> 잘 안 쓰는 이유 · 이해도 부족 · 적용 어려움<br>
+            <strong>후속:</strong> 맞춤 컨설팅 → 활용 포인트 1~2개 제안 → 상위군 전환 후보 체크
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="border-color:rgba(245,158,11,.3)">
+        <div class="ph" style="background:var(--amb)"><span class="pt stC">C 활용 지원 기관 대응 전략</span></div>
+        <div class="pb-sm">
+          <div style="font-size:12px;color:var(--tx2);line-height:1.9">
+            <strong>목표:</strong> 신뢰 형성, 컨설팅, 중간 이탈 방지<br>
+            <strong>접점:</strong> 월 1회 이상 방문 우선 + 재교육 병행<br>
+            <strong>점검:</strong> 미사용 이유 · 어려운 기능 · 활용점 파악<br>
+            <strong>후속:</strong> 쉬운 가이드 → 재교육 일정 → 최소 사용 항목 설정
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="border-color:rgba(240,82,82,.3)">
+        <div class="ph" style="background:var(--rdb)"><span class="pt stD">D 집중 대응 기관 대응 전략</span></div>
+        <div class="pb-sm">
+          <div style="font-size:12px;color:var(--tx2);line-height:1.9">
+            <strong>목표:</strong> 이탈 방지, 신뢰 형성, 인식 개선, 불만 완화<br>
+            <strong>접점:</strong> 월 1~2회 이상 방문 + 신속 1차 응대<br>
+            <strong>점검:</strong> 불편·불만 사항 · 교육/개입 포인트 파악<br>
+            <strong>후속:</strong> 이슈 기록 → 2차 이내 후속조치 → 집중 모니터링
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ════ INSTITUTION DETAIL MODAL ════ -->
+<div class="ov" id="inst-modal">
+  <div class="modal">
+    <div class="mhdr">
+      <div class="minfo">
+        <div class="mname" id="m-name">—</div>
+        <div class="msub" id="m-sub">—</div>
+      </div>
+      <div id="m-grade-badge" style="margin-right:8px"></div>
+      <button class="mcl" onclick="closeInstModal()">×</button>
+    </div>
+    <div class="mtabs">
+      <button class="mt active" onclick="switchMT(this,'mt-basic')">기본 정보</button>
+      <button class="mt" onclick="switchMT(this,'mt-visit')">방문 기록</button>
+      <button class="mt" onclick="switchMT(this,'mt-consult')">컨설팅 지원</button>
+      <button class="mt" onclick="switchMT(this,'mt-criteria')">관리 유형 체크리스트</button>
+      <button class="mt" onclick="switchMT(this,'mt-voc')">VOC</button>
+      <button class="mt" onclick="switchMT(this,'mt-edu')">교육</button>
+      <button class="mt" onclick="switchMT(this,'mt-output')">Output</button>
+    </div>
+    <div class="mbody">
+      <div class="tp active" id="mt-basic">
+        <div id="m-grade-banner"></div>
+        <div class="ig" id="m-basic-grid"></div>
+        <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:13px">
+          <div class="ik">기관 특징</div>
+          <div id="m-feat" style="font-size:13px;color:var(--tx2);line-height:1.7;white-space:pre-wrap;margin-top:4px"></div>
+        </div>
+        <div style="display:flex;gap:7px;margin-top:13px">
+          <button class="btn btn-g btn-sm" onclick="openEditInst()">✏️ 수정</button>
+          <button class="btn btn-d btn-sm" onclick="confirmDelCurrent()">🗑️ 삭제</button>
+        </div>
+      </div>
+      <div class="tp" id="mt-visit">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <span style="font-size:13px;font-weight:600">방문 기록 히스토리</span>
+          <button class="btn btn-p btn-sm" onclick="openAddVisit()">+ 방문 추가</button>
+        </div>
+        <div id="m-visits"></div>
+      </div>
+      <div class="tp" id="mt-consult">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <span style="font-size:13px;font-weight:600">컨설팅 지원 기록</span>
+          <button class="btn btn-p btn-sm" onclick="openAddConsult()">+ 컨설팅 추가</button>
+        </div>
+        <div id="m-consults"></div>
+      </div>
+      <div class="tp" id="mt-criteria">
+        <div id="m-criteria-content"></div>
+      </div>
+      <div class="tp" id="mt-voc">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <span style="font-size:13px;font-weight:600" id="m-voc-title">VOC 내역</span>
+          <button class="btn btn-p btn-sm" onclick="openAddVoc(CUR)">+ VOC 등록</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>등록일</th><th>유형</th><th>내용</th><th>본사 대응</th><th>상태</th><th></th></tr></thead>
+          <tbody id="m-voc-tbody"></tbody>
+        </table></div>
+      </div>
+      <div class="tp" id="mt-edu">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <span style="font-size:13px;font-weight:600">교육 현황</span>
+          <button class="btn btn-p btn-sm" onclick="openAddEdu()">+ 교육 추가</button>
+        </div>
+        <div id="m-edu-list"></div>
+      </div>
+      <div class="tp" id="mt-output">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <span style="font-size:13px;font-weight:600">Output 현황</span>
+          <button class="btn btn-g btn-sm" onclick="openEditOutput()">✏️ 수정</button>
+        </div>
+        <div id="m-output"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 관리 기준 팝업 -->
+<div class="sov" id="sov-grade-info">
+  <div class="sm sm-wide">
+    <div class="smh"><span class="smt">관리 기관별 구분 및 관리 기준</span><button class="mcl" onclick="closeSov('sov-grade-info')">×</button></div>
+    <div class="smb" style="overflow-x:auto">
+      <table class="st-tbl">
+        <thead>
+          <tr><th>유형</th><th>데이터 활용도</th><th>컴플레인 수</th><th>현장 체크</th><th>방문 주기</th><th>대응 목적</th><th>후속 액션</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="stA">A 고활용</span></td><td>75%↑</td><td>0~1건</td><td>20~25점</td><td>분기 1~2회</td><td>거점원 발굴, 리텐션</td><td>사례기록, 내부공유</td></tr>
+          <tr><td><span class="stB">B 안정운영</span></td><td>50~74%</td><td>2~3건</td><td>15~19점</td><td>격월 1~2회</td><td>관계형성, 컨설팅</td><td>맞춤 컨설팅, 상위전환 체크</td></tr>
+          <tr><td><span class="stC">C 활용지원</span></td><td>25~49%</td><td>4~5건</td><td>10~14점</td><td>월 1회 이상</td><td>신뢰형성, 이탈방지</td><td>쉬운가이드, 재교육 일정</td></tr>
+          <tr><td><span class="stD">D 집중대응</span></td><td>24%↓</td><td>6건↑ 또는 클레임</td><td>9점↓</td><td>월 1~2회↑</td><td>이탈방지, 불만완화</td><td>이슈기록, 집중모니터링</td></tr>
+        </tbody>
+      </table>
+      <div class="grade-explain" style="margin-top:14px">
+        <div class="ge-card" style="background:var(--gb);border-color:rgba(52,201,122,.3)">
+          <div style="font-size:12px;font-weight:700;color:var(--g);margin-bottom:6px">A 고활용 기관 점검 포인트</div>
+          <div style="font-size:11px;color:var(--tx2);line-height:1.8">우수 활용 사례 확보<br>교사·부모 반응 파악<br>거점원 가능성 체크<br>개선 요구사항 수집</div>
+        </div>
+        <div class="ge-card" style="background:var(--blb);border-color:rgba(96,165,250,.3)">
+          <div style="font-size:12px;font-weight:700;color:var(--bl);margin-bottom:6px">B 안정운영 기관 점검 포인트</div>
+          <div style="font-size:11px;color:var(--tx2);line-height:1.8">잘 안 쓰는 이유 파악<br>이해도 부족 지점 확인<br>적용 어려움 해소<br>상위군 전환 가능성 체크</div>
+        </div>
+        <div class="ge-card" style="background:var(--amb);border-color:rgba(245,158,11,.3)">
+          <div style="font-size:12px;font-weight:700;color:var(--am);margin-bottom:6px">C 활용지원 기관 점검 포인트</div>
+          <div style="font-size:11px;color:var(--tx2);line-height:1.8">미사용 이유 심층 파악<br>어려운 기능 특정<br>최소 사용 항목 설정<br>이탈 방지 집중 케어</div>
+        </div>
+        <div class="ge-card" style="background:var(--rdb);border-color:rgba(240,82,82,.3)">
+          <div style="font-size:12px;font-weight:700;color:var(--rd);margin-bottom:6px">D 집중대응 기관 점검 포인트</div>
+          <div style="font-size:11px;color:var(--tx2);line-height:1.8">불편·불만 사항 전수 파악<br>개입 포인트 확정<br>2차 이내 후속조치<br>집중 모니터링 체계 수립</div>
+        </div>
+      </div>
+    </div>
+    <div class="smf"><button class="btn btn-g" onclick="closeSov('sov-grade-info')">닫기</button></div>
+  </div>
+</div>
+
+<!-- 활용도 설명 팝업 -->
+<div class="sov" id="sov-util-info">
+  <div class="sm">
+    <div class="smh"><span class="smt" id="sov-util-title">데이터 활용도 기준</span><button class="mcl" onclick="closeSov('sov-util-info')">×</button></div>
+    <div class="smb" id="sov-util-body"></div>
+    <div class="smf"><button class="btn btn-g" onclick="closeSov('sov-util-info')">닫기</button></div>
+  </div>
+</div>
+
+<!-- 교육 이력 팝업 -->
+<div class="sov" id="sov-edu-hist">
+  <div class="sm">
+    <div class="smh"><span class="smt" id="sov-edu-title">교육 이력</span><button class="mcl" onclick="closeSov('sov-edu-hist')">×</button></div>
+    <div class="smb" id="sov-edu-body"></div>
+    <div class="smf"><button class="btn btn-g" onclick="closeSov('sov-edu-hist')">닫기</button></div>
+  </div>
+</div>
+
+<!-- ADD/EDIT INST -->
+<div class="sov" id="sov-inst">
+  <div class="sm">
+    <div class="smh"><span class="smt" id="sov-inst-title">기관 추가</span><button class="mcl" onclick="closeSov('sov-inst')">×</button></div>
+    <div class="smb">
+      <input type="hidden" id="ei-id">
+      <div class="fsec">기본 정보</div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">기관명 *</label><input class="fin" id="ei-name" placeholder="예: 햇살어린이집"></div>
+        <div class="fg"><label class="fl">담당 연구원 *</label><input class="fin" id="ei-res" placeholder="이름 입력"></div>
+      </div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">관할 지사</label><select class="fse" id="ei-branch"><option>서울지사</option><option>경기지사</option><option>인천지사</option><option>부산지사</option></select></div>
+        <div class="fg"><label class="fl">지역</label><select class="fse" id="ei-region"><option>서울</option><option>경기</option><option>인천</option><option>부산</option><option>대구</option><option>광주</option><option>기타</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">주소</label><input class="fin" id="ei-addr" placeholder="도로명 주소"></div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">원장 이름</label><input class="fin" id="ei-dir" placeholder="원장 이름"></div>
+        <div class="fg"><label class="fl">원장 전화</label><input class="fin" id="ei-tel" placeholder="010-0000-0000"></div>
+      </div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">연차</label><select class="fse" id="ei-yr"><option value="1">1년차</option><option value="2">2년차</option><option value="3">3년차</option><option value="4">4년차+</option></select></div>
+        <div class="fg"><label class="fl">거점원</label><select class="fse" id="ei-hub"><option value="N">N (비거점원)</option><option value="Y">Y (거점원)</option></select></div>
+      </div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">관리 등급</label><select class="fse" id="ei-grade"><option value="">미분류</option><option value="A">A 고활용</option><option value="B">B 안정운영</option><option value="C">C 활용지원</option><option value="D">D 집중대응</option></select></div>
+        <div class="fg"><label class="fl">데이터 활용도 (%)</label><input type="number" class="fin" id="ei-util" min="0" max="100" placeholder="0~100"></div>
+      </div>
+      <div class="fsec">사용 연령</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+        <label style="font-size:13px;color:var(--tx2);display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" class="age-cb" value="0" style="accent-color:var(--ac)"> 0세</label>
+        <label style="font-size:13px;color:var(--tx2);display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" class="age-cb" value="1" style="accent-color:var(--ac)"> 1세</label>
+        <label style="font-size:13px;color:var(--tx2);display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" class="age-cb" value="2" style="accent-color:var(--ac)"> 2세</label>
+        <label style="font-size:13px;color:var(--tx2);display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" class="age-cb" value="3" style="accent-color:var(--ac)"> 3세</label>
+        <label style="font-size:13px;color:var(--tx2);display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" class="age-cb" value="4" style="accent-color:var(--ac)"> 4세</label>
+        <label style="font-size:13px;color:var(--tx2);display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" class="age-cb" value="5" style="accent-color:var(--ac)"> 5세</label>
+      </div>
+      <div class="fg"><label class="fl">기관 특징</label><textarea class="fta" id="ei-feat" placeholder="기관의 특성, 분위기, 특이사항 등" style="min-height:90px"></textarea></div>
+    </div>
+    <div class="smf"><button class="btn btn-g" onclick="closeSov('sov-inst')">취소</button><button class="btn btn-p" onclick="saveInst()">저장하기</button></div>
+  </div>
+</div>
+
+<!-- ADD VISIT -->
+<div class="sov" id="sov-visit">
+  <div class="sm">
+    <div class="smh"><span class="smt">방문 기록 추가</span><button class="mcl" onclick="closeSov('sov-visit')">×</button></div>
+    <div class="smb">
+      <div class="fg2">
+        <div class="fg"><label class="fl">방문일자 *</label><input type="date" class="fin" id="vi-date"></div>
+        <div class="fg"><label class="fl">방문 유형</label><select class="fse" id="vi-type"><option>교육</option><option>영업</option><option>VOC 대응</option><option>관리</option><option>기타</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">방문 내용 *</label><textarea class="fta" id="vi-content" placeholder="방문 내용, 특이사항, 다음 계획 등" style="min-height:120px"></textarea></div>
+    </div>
+    <div class="smf"><button class="btn btn-g" onclick="closeSov('sov-visit')">취소</button><button class="btn btn-p" onclick="saveVisit()">저장</button></div>
+  </div>
+</div>
+
+<!-- ADD CONSULT -->
+<div class="sov" id="sov-consult">
+  <div class="sm">
+    <div class="smh"><span class="smt">컨설팅 지원 기록 추가</span><button class="mcl" onclick="closeSov('sov-consult')">×</button></div>
+    <div class="smb">
+      <div class="fg2">
+        <div class="fg"><label class="fl">날짜 *</label><input type="date" class="fin" id="co-date"></div>
+        <div class="fg"><label class="fl">컨설팅 유형</label><select class="fse" id="co-type"><option>기관 맞춤 컨설팅</option><option>활용 포인트 제안</option><option>가이드 제공</option><option>재교육 일정 수립</option><option>이탈 방지 대응</option><option>기타</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">컨설팅 내용 *</label><textarea class="fta" id="co-content" placeholder="컨설팅 내용, 제안 사항, 결과 등" style="min-height:100px"></textarea></div>
+      <div class="fg"><label class="fl">본사 대응 내용</label><textarea class="fta" id="co-response" placeholder="본사 내부 공유 내용, 후속 조치 등" style="min-height:80px"></textarea></div>
+    </div>
+    <div class="smf"><button class="btn btn-g" onclick="closeSov('sov-consult')">취소</button><button class="btn btn-p" onclick="saveConsult()">저장</button></div>
+  </div>
+</div>
+
+<!-- ADD VOC -->
+<div class="sov" id="sov-voc">
+  <div class="sm">
+    <div class="smh"><span class="smt">VOC 등록</span><button class="mcl" onclick="closeSov('sov-voc')">×</button></div>
+    <div class="smb">
+      <div class="fg2">
+        <div class="fg"><label class="fl">기관 선택 *</label><select class="fse" id="voc-inst-sel"></select></div>
+        <div class="fg"><label class="fl">VOC 유형 *</label><select class="fse" id="voc-type-sel"><option>기능 개선</option><option>오류</option><option>활용성</option><option>기타</option></select></div>
+      </div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">등록일</label><input type="date" class="fin" id="voc-date"></div>
+        <div class="fg"><label class="fl">처리 상태</label><select class="fse" id="voc-status-sel"><option>미처리</option><option>검토중</option><option>처리완료</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">VOC 내용 *</label><textarea class="fta" id="voc-content" placeholder="VOC 내용 상세 입력" style="min-height:100px"></textarea></div>
+      <div class="fg"><label class="fl">본사 대응 내용</label><textarea class="fta" id="voc-response" placeholder="본사의 대응/처리 내용" style="min-height:80px"></textarea></div>
+    </div>
+    <div class="smf"><button class="btn btn-g" onclick="closeSov('sov-voc')">취소</button><button class="btn btn-p" onclick="saveVoc()">등록</button></div>
+  </div>
+</div>
+
+<!-- ADD EDU -->
+<div class="sov" id="sov-edu">
+  <div class="sm">
+    <div class="smh"><span class="smt">교육 기록 추가</span><button class="mcl" onclick="closeSov('sov-edu')">×</button></div>
+    <div class="smb">
+      <div class="fg2">
+        <div class="fg"><label class="fl">교육일자 *</label><input type="date" class="fin" id="edu-date"></div>
+        <div class="fg"><label class="fl">교육 유형</label><select class="fse" id="edu-type"><option>대면</option><option>비대면</option></select></div>
+      </div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">횟수</label><input type="number" class="fin" id="edu-cnt" value="1" min="1"></div>
+        <div class="fg"><label class="fl">추가 교육 필요</label><select class="fse" id="edu-need"><option value="N">불필요</option><option value="Y">필요</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">교육 내용</label><textarea class="fta" id="edu-content" placeholder="교육 내용, 참여 인원, 특이사항 등" style="min-height:100px"></textarea></div>
+    </div>
+    <div class="smf"><button class="btn btn-g" onclick="closeSov('sov-edu')">취소</button><button class="btn btn-p" onclick="saveEdu()">저장</button></div>
+  </div>
+</div>
+
+<!-- EDIT OUTPUT -->
+<div class="sov" id="sov-output">
+  <div class="sm">
+    <div class="smh"><span class="smt">Output 정보 수정</span><button class="mcl" onclick="closeSov('sov-output')">×</button></div>
+    <div class="smb">
+      <div class="fg"><label class="fl">다운로드 수</label><input type="number" class="fin" id="out-dl" value="0" min="0"></div>
+      <div class="fg"><label class="fl">활용 사례</label><textarea class="fta" id="out-case" placeholder="실제 활용 사례"></textarea></div>
+      <div class="fg"><label class="fl">활용 아이디어</label><textarea class="fta" id="out-idea" placeholder="향후 활용 아이디어"></textarea></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+        <input type="checkbox" id="out-best" style="width:15px;height:15px;accent-color:var(--ac)">
+        <label for="out-best" style="font-size:13px;color:var(--tx2);cursor:pointer">⭐ 우수 사례 기관 등록</label>
+      </div>
+    </div>
+    <div class="smf"><button class="btn btn-g" onclick="closeSov('sov-output')">취소</button><button class="btn btn-p" onclick="saveOutput()">저장</button></div>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div class="cov" id="conf-ov">
+  <div class="cbox">
+    <div class="ct" id="conf-t">확인</div>
+    <div class="cm" id="conf-m"></div>
+    <div class="cb"><button class="btn btn-g" onclick="closeConf()">취소</button><button class="btn btn-d" id="conf-ok">삭제</button></div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+<script src="app.js"></script>
+</body>
+</html>
